@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="400.0" prefWidth="600.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8"
+            prefHeight="600.0" prefWidth="750.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="cgpi.controller.MainController">
     <left>
-        <VBox prefHeight="400.0" prefWidth="143.0" styleClass="sidebar" stylesheets="@style.css"
+        <VBox prefHeight="400.0" prefWidth="150.0" styleClass="sidebar" stylesheets="@style.css"
               BorderPane.alignment="CENTER">
             <children>
                 <Label alignment="CENTER" prefHeight="52.0" prefWidth="145.0" text="Figuras" textFill="#b5b2b2"
@@ -53,8 +53,12 @@
                 <SceneButton fx:id="CirculoButton" alignment="CENTER" contentDisplay="CENTER"
                              mnemonicParsing="false" onMouseClicked="#setScene" prefHeight="35.0" prefWidth="130.0"
                              styleClass="sidebar-btn" text="Círculo" textAlignment="CENTER"
-                             scenes = "Circulo"/>
-                <Pane prefHeight="200.0" prefWidth="143.0" styleClass="canvas"/>
+                             scenes = "Circulo">
+                    <VBox.margin>
+                        <Insets bottom="82.0" right="10.0" top="10.0"/>
+                    </VBox.margin>
+                </SceneButton>
+                <Pane prefHeight="200.0" prefWidth="150.0" styleClass="canvas"/>
             </children>
         </VBox>
     </left>

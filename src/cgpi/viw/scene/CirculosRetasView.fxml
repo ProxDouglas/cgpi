@@ -19,7 +19,8 @@
                                 <Insets bottom="10.0" left="15.0" right="10.0" top="20.0" />
                             </padding>
                         </Label>
-                        <Button mnemonicParsing="false" styleClass="inner-btn" text="Desenhe">
+                        <Button fx:id="drawButton" mnemonicParsing="false" styleClass="inner-btn"
+                                text="Desenhe" onMouseClicked="#draw">
                             <VBox.margin>
                                 <Insets left="25.0" right="10.0" />
                             </VBox.margin>
@@ -36,7 +37,8 @@
                                 <Insets bottom="10.0" left="23.0" right="10.0" top="20.0" />
                             </padding>
                         </Label>
-                        <Button mnemonicParsing="false" styleClass="inner-btn" text="Limpe">
+                        <Button fx:id="clearCanvas" mnemonicParsing="false" styleClass="inner-btn"
+                                text="Limpe"  onMouseClicked="#clearCanvas">
                             <VBox.margin>
                                 <Insets left="25.0" right="10.0" />
                             </VBox.margin>
