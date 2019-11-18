@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import static cgpi.viw.enums.Scenes.MAIN;
+import static cgpi.view.enums.Scenes.MAIN;
 
 /**
  * @author vitor.alves
@@ -14,10 +14,10 @@ import static cgpi.viw.enums.Scenes.MAIN;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        VFXMLLoader loader = new VFXMLLoader(MAIN);
+    public void start(Stage primaryStage) {
+        VFXMLLoader loader = new VFXMLLoader(MAIN, primaryStage);
         Parent root = loader.load();
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle(MAIN.getTitel());
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

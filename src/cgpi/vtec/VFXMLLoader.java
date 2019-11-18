@@ -1,126 +1,73 @@
 package cgpi.vtec;
 
-import cgpi.controller.AbstractController;
-import cgpi.viw.enums.Scenes;
-import cgpi.vtec.exception.ControllerEntityException;
+import cgpi.vtec.controllers.AbstractDesenhoController;
+import cgpi.view.enums.Scenes;
+import cgpi.vtec.controllers.ControllerBuilder;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.stage.Stage;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
 
 /**
- * Inicializa e configura o controller de um xml
- *
  * @author vitor.alves
  */
 public class VFXMLLoader {
 
+    private final Stage stage;
+
     private FXMLLoader fxmlLoader;
 
-    private AbstractController controller;
+    private AbstractDesenhoController controller;
 
-    private ControllerEntity controllerEntity = new ControllerEntity();
+    private AbstractDesenhoController parentController;
 
-    private Set<Map.Entry<String, Object>> entries;
+    private ControllerBuilder controllerBuilder;
 
-    public VFXMLLoader(String name) {
+    public VFXMLLoader(String name, Stage stage) {
         this.fxmlLoader = new FXMLLoader(getClass().getResource(name));
+        this.stage = stage;
     }
 
-    public VFXMLLoader(Scenes scene) {
-        this(scene.getLocation());
+    public VFXMLLoader(Scenes scene, Stage stage) {
+        this(scene.getLocation(), stage);
     }
 
-    public AbstractController getController() {
+    public AbstractDesenhoController getController() {
         return controller;
     }
 
-    public Node getRoot() { return fxmlLoader.getRoot(); }
+    public Node getRoot() {
+        return fxmlLoader.getRoot();
+    }
 
     /**
      * Carrega um arquivo xml e constroi o controller
      *
-     * @throws Exception
      */
-    public <T> T load() throws Exception {
-        T parent = fxmlLoader.load();
-        entries = this.fxmlLoader.getNamespace().entrySet();
-        controller = this.fxmlLoader.getController();
-        controllerEntity.create(controller);
+    public <T> T load() {
+        T parent = null;
+        try {
+            parent = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.controller = this.fxmlLoader.getController();
+        this.controllerBuilder = new ControllerBuilder(this.controller, this.fxmlLoader.getNamespace().entrySet(), stage);
 
-        this.buildController();
+        this.build();
 
         return parent;
     }
 
-    private void buildController() throws IllegalAccessException {
-        Map<String, Node> components = new HashMap<>();
-        Object value;
-        for (Map.Entry<String, Object> entry : entries) {
-            value = entry.getValue();
-            if (value instanceof Node) {
-                components.put(entry.getKey(), (Node) value);
-            }
+    private void build() {
+        if (this.parentController != null) {
+            this.controllerBuilder.setParentController(this.parentController);
         }
-        this.controllerEntity.setComponents(components);
-
-        if (controller instanceof Initializable) {
-            ((Initializable) controller).initialize();
-        }
+        this.controller = this.controllerBuilder.build();
     }
 
-    private class ControllerEntity {
-
-        private static final String CONTROLLER_FIELD = "components";
-
-        private AbstractController controller;
-
-        private Field components;
-
-        public void setController(AbstractController controller) {
-            this.controller = controller;
-        }
-
-        public void create(AbstractController controller) throws NoSuchFieldException, ControllerEntityException {
-            this.controller = controller;
-            this.create();
-        }
-
-        public void create() throws NoSuchFieldException, ControllerEntityException {
-            this.components = this.getComponentField();
-        }
-
-        private Field getComponentField() throws NoSuchFieldException, ControllerEntityException {
-            Class<?> aClass = this.controller.getClass();
-            Field field = null;
-            while (field == null && aClass != null) {
-                aClass = aClass.getSuperclass();
-                if (aClass != null && containsFieldComponents(aClass)) {
-                    field = aClass.getDeclaredField(CONTROLLER_FIELD);
-                }
-            }
-            if (aClass == null) {
-                throw new ControllerEntityException("No AbstractController instence controller.");
-            }
-            return field;
-        }
-
-        private boolean containsFieldComponents(Class<?> aClass) {
-            try {
-                aClass.getDeclaredField(CONTROLLER_FIELD);
-            } catch (NoSuchFieldException e) {
-                return false;
-            }
-            return true;
-        }
-
-        public void setComponents(Object components) throws IllegalAccessException {
-            this.components.setAccessible(true);
-            this.components.set(this.controller, components);
-            this.components.setAccessible(false);
-        }
+    public void setParentController(AbstractDesenhoController parent) {
+        this.parentController = parent;
     }
 }
